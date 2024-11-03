@@ -6,8 +6,8 @@ SPDX-License-Identifier: Apache-2.0
 
 # Git Forges
 
-This contians colelcted info about file URLs of the different git forges,
-useful for developpment, checking and testing.
+This contains collected info about file URLs of the different git forges,
+useful for development, checking and testing.
 We mention both the software and the actual hosting instances.
 
 ## GitHub
