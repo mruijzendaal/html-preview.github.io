@@ -17,10 +17,17 @@ SPDX-License-Identifier: Apache-2.0
 Allows to render HTML files on git forges (like GitHub) in your browser,
 without cloning or downloading.
 
-**NOTE**
-Freely hosted [CORS][CORS] (Cross-origin resource sharing) proxies -
+> [!warning]
+> Freely hosted [CORS][CORS] (Cross-origin resource sharing) proxies -
 like the ones used by this script -
-are a potential security risc!
+are a potential **security risk!**
+
+> [!warning]
+> If a script stores sensitive data (as cookie, `localStorage`, etc...), then **other repos you open will also have access** to this data.
+> 
+> How to avoid risk:
+> - Don't input sensitive data while previewing
+> - Clear all site data after previewing a repo
 
 Currently supported git forges:
 
