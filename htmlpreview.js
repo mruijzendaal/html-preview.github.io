@@ -381,16 +381,36 @@
 	const loadHTML = function (data) {
 		if (data) {
 			// Add <base> just after <head>
-			// and replace <script type="text/javascript">
-			// with <script type="text/htmlpreview">
 			data = data.replace(
 				/<head([^>]*)>/i,
 				'<head$1><base href="' + rawFileUrl + '">'
-			).replace(
-				// eslint-disable-next-line @stylistic/js/max-len
-				/<script(\s*src=["'][^"']*["'])?(\s*type=["'](text|application)\/javascript["'])?/gi,
-				'<script type="text/htmlpreview"$1'
 			);
+
+			// Only rewrite <script> tags that are local or from a git forge
+			data = data.replace(/<script(\s+[^>]*)?>/gi, function (match) {
+				// Extract src attribute if present
+				const srcMatch = match.match(/src=["']([^"']+)["']/i);
+				if (srcMatch) {
+					const src = srcMatch[1];
+					// Only rewrite if src is a git forge file
+					if (isGitForgeFileUrl(src)) {
+						// Remove any existing type attribute
+						let tag = match.replace(/type=["'][^"']*["']/i, '');
+						// Add our type
+						tag = tag.replace('<script', '<script type="text/htmlpreview"');
+						return tag;
+					} else {
+						// Leave external scripts (like CDN) untouched
+						return match;
+					}
+				} else {
+					// Inline scripts: rewrite
+					let tag = match.replace(/type=["'][^"']*["']/i, '');
+					tag = tag.replace('<script', '<script type="text/htmlpreview"');
+					return tag;
+				}
+			});
+
 			// Delay updating document to have it cleared before
 			setTimeout(function () {
 				document.open();
