@@ -391,16 +391,22 @@
 				// Extract src attribute if present
 				const srcMatch = match.match(/src=["']([^"']+)["']/i);
 				if (srcMatch) {
-					const src = srcMatch[1];
+					let src = srcMatch[1];
+					let absSrc;
+					try {
+						absSrc = new URL(src, rawFileUrl).href;
+					} catch (e) {
+						absSrc = src; // fallback, treat as is
+					}
 					// Only rewrite if src is a git forge file
-					if (isGitForgeFileUrl(src)) {
+					if (isGitForgeFileUrl(absSrc)) {
 						// Remove any existing type attribute
 						let tag = match.replace(/type=["'][^"']*["']/i, '');
 						// Add our type
 						tag = tag.replace('<script', '<script type="text/htmlpreview"');
 						return tag;
 					} else {
-						// Leave external scripts (like CDN) untouched
+						// Leave external scripts (like CDN or local) untouched
 						return match;
 					}
 				} else {
